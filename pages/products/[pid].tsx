@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router';
 import ErrorMessage from '../../components/error';
-import Form from '../../components/form';
+import Form from '../../components/editproduct';
 import Loading from '../../components/loading';
 import { useSession } from '../../context/session';
 import { useProductInfo, useProductList } from '../../lib/hooks';

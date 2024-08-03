@@ -4,6 +4,8 @@ import { FormData, StringKeyValue } from '../types';
 import { useSession } from '../context/session';
 import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
+import TextareaAutosize from 'react-textarea-autosize';
+
 interface FormProps {
     formData: FormData;
     onCancel(): void;
@@ -132,12 +134,12 @@ const Form = ({ formData, onCancel, onSubmit }: FormProps) => {
             <Panel header="Description">
                 <FormGroup>
                     {/* Using description for demo purposes. Consider using a wysiwig instead (e.g. TinyMCE) */}
-                    <Textarea
-                        label="Description"
+                    <TextareaAutosize
                         name="description"
                         placeholder="Product info"
                         value={form.description}
                         rows={7}
+                        maxRows={20}
                         onChange={handleChange}
                     />
                     {/* <Textarea

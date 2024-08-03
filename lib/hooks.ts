@@ -98,3 +98,101 @@ export const useShippingAndProductsInfo = (orderId: number) => {
         error,
     };
 }
+
+export function usebrands() {
+    const { context } = useSession();
+    const params = new URLSearchParams({ context }).toString();
+    // Request is deduped and cached; Can be shared across components
+    const { data, error } = useSWR(context ? ['/api/brands', params] : null, fetcher);
+
+    return {
+        summary: data,
+        isLoading: !data && !error,
+        error,
+    };
+}
+
+export function usebrandList(query?: QueryParams) {
+    const { context } = useSession();
+    const params = new URLSearchParams({ ...query, context }).toString();
+
+    // Use an array to send multiple arguments to fetcher
+    const { data, error, mutate: mutateList } = useSWR(context ? ['/api/brands/list', params] : null, fetcher);
+
+    return {
+        list: data?.data,
+        meta: data?.meta,
+        isLoading: !data && !error,
+        error,
+        mutateList,
+    };
+}
+
+export function usebrandInfo(pid: number, list?:ListItem[]) {
+    const { context } = useSession();
+    const params = new URLSearchParams({ context }).toString();
+
+    let brand: ListItem; 
+
+    if (list?.length) { 
+       brand = list.find(item => item.id === pid);
+    }
+
+    // Conditionally fetch brand if it doesn't exist in the list (e.g. deep linking)
+    const { data, error } = useSWR(!brand && context ? [`/api/brands/${pid}`, params] : null, fetcher);
+
+    return {
+        brand: brand ?? data,
+        isLoading: brand ? false : (!data && !error),
+        error,
+    };
+}
+
+export function usecategories() {
+    const { context } = useSession();
+    const params = new URLSearchParams({ context }).toString();
+    // Request is deduped and cached; Can be shared across components
+    const { data, error } = useSWR(context ? ['/api/categories', params] : null, fetcher);
+
+    return {
+        summary: data,
+        isLoading: !data && !error,
+        error,
+    };
+}
+
+export function usecategoryList(query?: QueryParams) {
+    const { context } = useSession();
+    const params = new URLSearchParams({ ...query, context }).toString();
+
+    // Use an array to send multiple arguments to fetcher
+    const { data, error, mutate: mutateList } = useSWR(context ? ['/api/categories/list', params] : null, fetcher);
+
+    return {
+        list: data?.data,
+        meta: data?.meta,
+        isLoading: !data && !error,
+        error,
+        mutateList,
+    };
+}
+
+export function usecategoryInfo(pid: number, list?:ListItem[]) {
+    const { context } = useSession();
+    const params = new URLSearchParams({ context }).toString();
+
+    let category: ListItem; 
+
+    if (list?.length) { 
+       category = list.find(item => item.id === pid);
+    }
+
+    // Conditionally fetch category if it doesn't exist in the list (e.g. deep linking)
+    const { data, error } = useSWR(!category && context ? [`/api/categories/${pid}`, params] : null, fetcher);
+
+    return {
+        category: category ?? data,
+        isLoading: category ? false : (!data && !error),
+        error,
+    };
+}
