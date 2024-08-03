@@ -1,7 +1,9 @@
 import { Button, Checkbox, Flex, FormGroup, Input, Panel, Select, Form as StyledForm, Textarea } from '@bigcommerce/big-design';
 import { ChangeEvent, FormEvent, useState } from 'react';
 import { FormData, StringKeyValue } from '../types';
-
+import { useSession } from '../context/session';
+import CircularProgress from '@mui/material/CircularProgress';
+import Box from '@mui/material/Box';
 interface FormProps {
     formData: FormData;
     onCancel(): void;
@@ -14,10 +16,41 @@ const FormErrors = {
 };
 
 const Form = ({ formData, onCancel, onSubmit }: FormProps) => {
+    const encodedContext = useSession()?.context;
+
     const { description, isVisible, name, price, type } = formData;
     const [form, setForm] = useState<FormData>({ description, isVisible, name, price, type });
     const [errors, setErrors] = useState<StringKeyValue>({});
+    const [gptdescription, setGptdescription] = useState({ __html: '' });
+    const handleChangeingpt = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        const { name: formName, value } = event.target || {};
+        setGptdescription({ __html: value });
+    };
+    const savegptdescription = async () => {
+        setForm(prevForm => ({ ...prevForm, description: gptdescription.__html }));
+    }
+    const getrateDescriptionusinggpt = async () => {
+        try {
+            setGptdescription({ __html: null });
+            const response = await fetch(`/api/gptdescription?context=${encodedContext}`,{
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    prompt: form.name,
+                }),
+            });
+            
+            const data = await response.json();
+            // show the data in the description in alert box
+            // alert('data.description');
+            setGptdescription({ __html: data.data });
 
+            // setForm(prevForm => ({ ...prevForm, description: 'data.description' }));
+            // render the same page again
+        } catch (error) {
+            console.error('Error updating the product: ', error);
+        }
+    }
     const handleChange = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name: formName, value } = event.target || {};
         setForm(prevForm => ({ ...prevForm, [formName]: value }));
@@ -104,9 +137,30 @@ const Form = ({ formData, onCancel, onSubmit }: FormProps) => {
                         name="description"
                         placeholder="Product info"
                         value={form.description}
+                        rows={7}
                         onChange={handleChange}
                     />
+                    {/* <Textarea
+                        label="GPT Description"
+                        name="gptdescription"
+                        placeholder="Product info"
+                        value={gptdescription}
+                        onChange={handleChangeingpt}
+                    /> */}
                 </FormGroup>
+            </Panel>
+            <Panel header="GPT Description">
+            <a href="#" onClick={getrateDescriptionusinggpt}>Get Description using GPT</a>
+            <br></br><br></br>
+            { gptdescription.__html!='' && gptdescription.__html!=null?<Button  onClick={savegptdescription}>Save GPT Description</Button>:null}
+            <br></br><br></br>
+            { gptdescription.__html == null?<Box sx={{ display: 'flex' }}>
+                <CircularProgress />
+            </Box> : null}
+
+            <div dangerouslySetInnerHTML={gptdescription} /> 
+
+                {/* {gptdescription} */}
             </Panel>
             <Flex justifyContent="flex-end">
                 <Button
