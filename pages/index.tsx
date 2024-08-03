@@ -3,7 +3,8 @@ import styled from 'styled-components';
 import ErrorMessage from '../components/error';
 import Loading from '../components/loading';
 import { useProducts } from '../lib/hooks';
-
+import 'mdb-react-ui-kit/dist/css/mdb.min.css';
+import "@fortawesome/fontawesome-free/css/all.min.css";
 const Index = () => {
     const { error, isLoading, summary } = useProducts();
 

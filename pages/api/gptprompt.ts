@@ -60,9 +60,7 @@ debugger
             ],
           });
         
-          const result = await chatSession.sendMessage(`Add with html tags line ul li br h1 h2 p etc for formatting to be to be redered on website, Enrich plagiarism free persuasive product description for 
-            "${req.body.prompt}" with model number "WALGWP-INFM".
-            The description should demonstrate Expertise, Authoritativeness and Trustworthiness. The description should be comprehensive and should have a transactional intent. The description should be in an engaging format. Highlight Key features, offer detailed specifications, include factual ballistics and performance analysis. Add sections such as Overview, Key Features, Detailed Specifications with actual values, Ballistics and Performance Analysis, Benefits of this particular ammunition, Usage scenarios of this ammunition, Compatibility, Quality Assurance followed by the manufacturer, Accuracy and Precision metrics of this ammunition and Finally Expert Insights. To allow the product description is detailed enough, please include any other external information that may not be requested here to reach to a total word length of at least 1500 words and maximum of 3000 words. Include a compelling call to action encouraging customers to purchase now!`);
+          const result = await chatSession.sendMessage(req.body.prompt);
             let data = result.response.text();
         //   console.log(result.response.text());
         // data = data.replace(/(?:\r\n|\r|\n)/g, '<br>');
