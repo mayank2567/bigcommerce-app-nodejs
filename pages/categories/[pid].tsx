@@ -3,19 +3,19 @@ import ErrorMessage from '../../components/error';
 import Form from '../../components/editproduct';
 import Loading from '../../components/loading';
 import { useSession } from '../../context/session';
-import { useProductInfo, useProductList } from '../../lib/hooks';
+import { usecategoryInfo, usecategoryList } from '../../lib/hooks';
 import { FormData } from '../../types';
 
-const ProductInfo = () => {
+const categoryInfo = () => {
     const router = useRouter();
     const encodedContext = useSession()?.context;
     const pid = Number(router.query?.pid);
-    const { error, isLoading, list = [], mutateList } = useProductList();
-    const { isLoading: isInfoLoading, product } = useProductInfo(pid, list);
-    const { description, is_visible: isVisible, name, price, type } = product ?? {};
+    const { error, isLoading, list = [], mutateList } = usecategoryList();
+    const { isLoading: isInfoLoading, category } = usecategoryInfo(pid, list);
+    const { description, is_visible: isVisible, name, price, type } = category ?? {};
     let formData = { description, isVisible, name, price, type };
-    formData = { ...formData, ...product };
-    const handleCancel = () => router.push('/products');
+    formData = { ...formData, ...category };
+    const handleCancel = () => router.push('/categories');
 
     const handleSubmit = async (data: FormData) => {
         try {
@@ -24,10 +24,10 @@ const ProductInfo = () => {
             let apiFormattedData = { description, is_visible: isVisible, name, price, type };
             apiFormattedData = {...apiFormattedData, ...data};
             // Update local data immediately (reduce latency to user)
-            mutateList([...filteredList, { ...product, ...data }], false);
+            mutateList([...filteredList, { ...category, ...data }], false);
 
-            // Update product details
-            await fetch(`/api/products/${pid}?context=${encodedContext}`, {
+            // Update category details
+            await fetch(`/api/categories/${pid}?context=${encodedContext}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(apiFormattedData),
@@ -36,9 +36,9 @@ const ProductInfo = () => {
             // Refetch to validate local data
             mutateList();
 
-            router.push('/products');
+            router.push('/categories');
         } catch (error) {
-            console.error('Error updating the product: ', error);
+            console.error('Error updating the category: ', error);
         }
     };
 
@@ -50,4 +50,4 @@ const ProductInfo = () => {
     );
 };
 
-export default ProductInfo;
+export default categoryInfo;

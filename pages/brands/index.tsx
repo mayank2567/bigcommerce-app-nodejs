@@ -5,7 +5,7 @@ import { useRouter } from 'next/router';
 import { ReactElement, useState } from 'react';
 import ErrorMessage from '../../components/error';
 import Loading from '../../components/loading';
-import { usebrandList } from '../../lib/hooks';
+import { useBrandList } from '../../lib/hooks';
 import { TableItem } from '../../types';
 
 const Brands = () => {
@@ -14,7 +14,7 @@ const Brands = () => {
     const [columnHash, setColumnHash] = useState('');
     const [direction, setDirection] = useState<TableSortDirection>('ASC');
     const router = useRouter();
-    const { error, isLoading, list = [], meta = {} } = usebrandList({
+    const { error, isLoading, list = [], meta = {} } = useBrandList({
       page: String(currentPage),
       limit: String(itemsPerPage),
       ...(columnHash && { sort: columnHash }),

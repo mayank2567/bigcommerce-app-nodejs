@@ -99,7 +99,7 @@ export const useShippingAndProductsInfo = (orderId: number) => {
     };
 }
 
-export function usebrands() {
+export function useBrands() {
     const { context } = useSession();
     const params = new URLSearchParams({ context }).toString();
     // Request is deduped and cached; Can be shared across components
@@ -112,7 +112,7 @@ export function usebrands() {
     };
 }
 
-export function usebrandList(query?: QueryParams) {
+export function useBrandList(query?: QueryParams) {
     const { context } = useSession();
     const params = new URLSearchParams({ ...query, context }).toString();
 
@@ -128,7 +128,7 @@ export function usebrandList(query?: QueryParams) {
     };
 }
 
-export function usebrandInfo(pid: number, list?:ListItem[]) {
+export function useBrandInfo(pid: number, list?:ListItem[]) {
     const { context } = useSession();
     const params = new URLSearchParams({ context }).toString();
 

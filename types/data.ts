@@ -4,6 +4,9 @@ export interface FormData {
     name: string;
     price: number;
     type: string;
+    metadescriptions: string;
+    metakeywords: string;
+    searchkeywords: string;
 }
 
 export interface TableItem {
