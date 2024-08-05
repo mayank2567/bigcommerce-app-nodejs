@@ -14,9 +14,14 @@ import {
   MaterialReactTable,
   useMaterialReactTable,
 } from "material-react-table";
-
+import Button from "react-bootstrap/Button";
+import { Row, Col } from "react-bootstrap";
+import generate_details from "../../lib/generate_details";
+import { useSession } from "../../context/session";
 
 const Products = () => {
+    const encodedContext = useSession()?.context;
+
   const [rowSelection, setRowSelection] = useState({});
   const [pagination, setPagination] = useState({
     pageIndex: 0,
@@ -62,10 +67,20 @@ const Products = () => {
       
     ],
   });
-
+  async function update_using_gpt(){
+    let ids = Object.keys(rowSelection);
+    let ids_int = ids.map((id) => parseInt(id));
+    let products_to_be_updated = list.filter((product) => ids_int.includes(product.id));
+    alert(`Start updating ${products_to_be_updated.length} products`);
+    generate_details('Product',products_to_be_updated, encodedContext); 
+  }
   return (
     <Panel id="products">
-      
+        <Row>
+            <Col align="end">
+                <Button disabled = {Object.keys(rowSelection).length ? false : true}  onClick={update_using_gpt}>Generate Details</Button>     
+            </Col>
+        </Row>
       <MaterialReactTable table={table} />;
     </Panel>
   );
