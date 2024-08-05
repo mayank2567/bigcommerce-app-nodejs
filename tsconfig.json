@@ -44,7 +44,7 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx"
-  ],
+, "components/prompts.tsx"  ],
   "exclude": [
     "node_modules",
     "scripts"

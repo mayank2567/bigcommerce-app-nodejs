@@ -1,8 +1,6 @@
 import { ChangeEvent, FormEvent, useState } from "react";
 import { FormData, StringKeyValue } from "../types";
 import { useSession } from "../context/session";
-import CircularProgress from "@mui/material/CircularProgress";
-import Box from "@mui/material/Box";
 import TextareaAutosize from "react-textarea-autosize";
 import Form from "react-bootstrap/Form";
 import Container from "react-bootstrap/Container";
@@ -13,8 +11,7 @@ import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 import Modal from "react-bootstrap/Modal";
 import Spinner from "react-bootstrap/Spinner";
-import { Category } from "@mui/icons-material";
-
+import getPromts from "./prompts";
 const InputForm = ({ formData, onCancel, onSubmit }) => {
   const encodedContext = useSession()?.context;
   console.log("formData", formData);
@@ -47,33 +44,12 @@ const InputForm = ({ formData, onCancel, onSubmit }) => {
   const [meta_keywords, setMeta_keywords] = useState(
     formData.meta_keywords?.join(",") || ""
   );
-  let prompts = {
-    Product:{
-      description: `Add with html tags line ul li br h1 h2 p etc for formatting to be to be redered on website, Enrich plagiarism free persuasive product description for
-      brand "${form.name}". The description should demonstrate Expertise, Authoritativeness and Trustworthiness. The description should be comprehensive and should have a transactional intent. The description should be in an engaging format. Highlight Key features, offer detailed specifications, include factual ballistics and performance analysis. Add sections such as Overview, Key Features, Detailed Specifications with actual values, Ballistics and Performance Analysis, Benefits of this particular ammunition, Usage scenarios of this ammunition, Compatibility, Quality Assurance followed by the manufacturer, Accuracy and Precision metrics of this ammunition and Finally Expert Insights. To allow the product description is detailed enough, please include any other external information that may not be requested here to reach to a total word length of at least 1500 words and maximum of 3000 words. Include a compelling call to action encouraging customers to purchase now!`,
-      meta_description: `Generate meta description for product "${form.name}", only retrun one sentence which i can use as meta description`,
-      search_keywords: `Generate search keywords for product "${form.name}" which are long tail high intent, high volume, low competition and comma separated. return 15 keywords whiich i can use as search keywords directly. return nothing but keywords`,
-      meta_keywords: `Generate meta keywords for product "${form.name}" which are long tail high intent, high volume, low competition and comma separated. return 15 keywords whiich i can use as meta keywords directly. return nothing but keywords`
-    },
-    Brand:{
-      description: `Generate and enrich plagiarism free brand description for brand "${form.name}". 
-      The description should demonstrate Expertise, Authoritativeness and Trustworthiness. The description should be comprehensive and should have a transactional intent. Use long tail, high intent, high search volume low competition keywords in the write up.`,
-      meta_description: `Generate meta description for brand "${form.name}", only retrun one sentence which i can use as meta description`,
-      search_keywords: `Generate search keywords for brand "${form.name}" which are long tail high intent, high volume, low competition and comma separated. return 15 keywords whiich i can use as search keywords directly. return nothing but keywords`,
-      meta_keywords: `Generate meta keywords for brand "${form.name}" which are long tail high intent, high volume, low competition and comma separated. return 15 keywords whiich i can use as meta keywords directly. return nothing but keywords`
-    },
-    Category:{
-      description: `Generate and enrich plagiarism free category description for category ${form.name}. The description should demonstrate Expertise, Authoritativeness and Trustworthiness. The description should be comprehensive and should have a transactional intent. Use long tail, high intent, high search volume low competition keywords in the write up.`,
-      meta_description: `Generate meta description for category "${form.name}", only retrun one sentence which i can use as meta description`,
-      search_keywords: `Generate search keywords for category "${form.name}" which are long tail high intent, high volume, low competition and comma separated. return 15 keywords whiich i can use as search keywords directly. return nothing but keywords`,
-      meta_keywords: `Generate meta keywords for category "${form.name}" which are long tail high intent, high volume, low competition and comma separated. return 15 keywords whiich i can use as meta keywords directly. return nothing but keywords`
-    }
-    }
+
   const genratedescriptionusinggpt = async () => {
     try {
       setForm((prevForm) => ({ ...prevForm, description: "Generating" }));
       setDescriptionspinner(true);
-      let prompt =  prompts[page_type].description;
+      let prompt = getPromts(form.name, form.page_type, "description");
       const response = await fetch(`/api/gptprompt?context=${encodedContext}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -94,7 +70,7 @@ const InputForm = ({ formData, onCancel, onSubmit }) => {
     try {
       setForm((prevForm) => ({ ...prevForm, meta_description: "Generating" }));
       setMetaDescriptionspinner(true);
-      let prompt = prompts[page_type].meta_description;
+      let prompt = getPromts(form.name, form.page_type, "meta_description");
       const response = await fetch(`/api/gptprompt?context=${encodedContext}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -115,7 +91,7 @@ const InputForm = ({ formData, onCancel, onSubmit }) => {
     try {
       setForm((prevForm) => ({ ...prevForm, search_keywords: "Generating" }));
       setSearchKeywordsSpinner(true);
-      let prompt = prompts[page_type].search_keywords;
+      let prompt = getPromts(form.name, form.page_type, "search_keywords");
       const response = await fetch(`/api/gptprompt?context=${encodedContext}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -136,7 +112,7 @@ const InputForm = ({ formData, onCancel, onSubmit }) => {
     try {
       setForm((prevForm) => ({ ...prevForm, meta_keywords: "Generating" }));
       setMetaKeywordsSpinner(true);
-      let prompt = prompts[page_type].meta_keywords;
+      let prompt = getPromts(form.name, form.page_type, "meta_keywords");
       const response = await fetch(`/api/gptprompt?context=${encodedContext}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -287,6 +263,7 @@ const InputForm = ({ formData, onCancel, onSubmit }) => {
         <Row>
           <br></br>
         </Row>
+        {page_type !== "Brand"?
         <Card>
           <Card.Body>
             <Row>
@@ -322,6 +299,7 @@ const InputForm = ({ formData, onCancel, onSubmit }) => {
             </Row>
           </Card.Body>
         </Card>
+        :null}
         <Card>
           <Card.Body>
             <Row>

@@ -47,12 +47,14 @@ export default async function gptdescription(
 ) {
   try {
     const { accessToken, storeHash } = await getSession(req);
+    let prompt = req.query.prompt || req.body.prompt;
     const bigcommerce = bigcommerceClient(accessToken, storeHash);
     let data = "";
-    if (req.query.model === "gpt") {
+    debugger
+    if (req?.query?.model === "gpt") {
       let gptdata = await openai.completions.create({
         model: "gpt-4o-mini",
-        prompt: req.query.prompt,
+        prompt: prompt,
         max_tokens: 100,
         temperature: 0.7,
       });
@@ -63,7 +65,7 @@ export default async function gptdescription(
         history: [],
       });
 
-      const result = await chatSession.sendMessage(req.query.prompt);
+      const result = await chatSession.sendMessage(prompt);
       data = result.response.text();
     }
     //   console.log(result.response.text());
