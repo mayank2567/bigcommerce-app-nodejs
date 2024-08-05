@@ -16,8 +16,9 @@ import {
 } from "material-react-table";
 import Button from "react-bootstrap/Button";
 import { Row, Col } from "react-bootstrap";
-import generate_details from "../../lib/generate_details";
+import gpt_module from "../../lib/generate_details";
 import { useSession } from "../../context/session";
+import { ToastContainer, toast } from 'react-toastify';
 
 const Products = () => {
     const encodedContext = useSession()?.context;
@@ -71,12 +72,13 @@ const Products = () => {
     let ids = Object.keys(rowSelection);
     let ids_int = ids.map((id) => parseInt(id));
     let products_to_be_updated = list.filter((product) => ids_int.includes(product.id));
-    alert(`Start updating ${products_to_be_updated.length} products`);
-    generate_details('Product',products_to_be_updated, encodedContext); 
+    toast(`Starting to update ${products_to_be_updated.length} products`);
+    gpt_module.generate_details('Product',products_to_be_updated, encodedContext); 
   }
   return (
     <Panel id="products">
-        <Row>
+                        <ToastContainer />
+                        <Row>
             <Col align="end">
                 <Button disabled = {Object.keys(rowSelection).length ? false : true}  onClick={update_using_gpt}>Generate Details</Button>     
             </Col>

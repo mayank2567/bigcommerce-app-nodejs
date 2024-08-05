@@ -1,5 +1,5 @@
 import getPromts from "../components/prompts";
-
+let queue = [];
 async function generate_details(type, details, encodedContext) {
     for (let i = 0; i < details.length; i++) {
         let description_prompt = getPromts(details[i].name, type, 'description');
@@ -50,4 +50,4 @@ async function generate_details(type, details, encodedContext) {
 
     }
 }
-export default generate_details;
+export default {generate_details};
