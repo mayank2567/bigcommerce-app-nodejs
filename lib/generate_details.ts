@@ -26,7 +26,6 @@ async function generate_details(type, details, encodedContext) {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ prompt: meta_keywords_prompt, type: 'meta_keywords' }),
         });
-        debugger
         let apiFormattedData = { ...details[i] };
          let responses = {
             description: await description_response.json(),
