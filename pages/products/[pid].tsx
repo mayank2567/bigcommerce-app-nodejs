@@ -13,7 +13,7 @@ const ProductInfo = () => {
     const { error, isLoading, list = [], mutateList } = useProductList();
     const { isLoading: isInfoLoading, product } = useProductInfo(pid, list);
     const { description, is_visible: isVisible, name, price, type } = product ?? {};
-    let formData = { description, isVisible, name, price, type };
+    let formData = { description, isVisible, name, price, type, page_type: 'Product' };
     formData = { ...formData, ...product };
     const handleCancel = () => router.push('/products');
 

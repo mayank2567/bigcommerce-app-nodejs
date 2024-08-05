@@ -14,7 +14,7 @@ export default async function categories(req: NextApiRequest, res: NextApiRespon
                 const { accessToken, storeHash } = await getSession(req);
                 const bigcommerce = bigcommerceClient(accessToken, storeHash);
 
-                const { data } = await bigcommerce.get(`/catalog/products/${pid}`);
+                const { data } = await bigcommerce.get(`/catalog/categories/${pid}`);
                 res.status(200).json(data);
             } catch (error) {
                 const { message, response } = error;
@@ -26,7 +26,7 @@ export default async function categories(req: NextApiRequest, res: NextApiRespon
                 const { accessToken, storeHash } = await getSession(req);
                 const bigcommerce = bigcommerceClient(accessToken, storeHash);
 
-                const { data } = await bigcommerce.put(`/catalog/products/${pid}`, body);
+                const { data } = await bigcommerce.put(`/catalog/categories/${pid}`, body);
                 res.status(200).json(data);
             } catch (error) {
                 const { message, response } = error;

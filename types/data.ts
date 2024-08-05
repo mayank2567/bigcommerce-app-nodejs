@@ -7,6 +7,7 @@ export interface FormData {
     metadescriptions: string;
     metakeywords: string;
     searchkeywords: string;
+    page_type: string;
 }
 
 export interface TableItem {

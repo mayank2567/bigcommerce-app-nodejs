@@ -13,31 +13,32 @@ const BrandInfo = () => {
     const { error, isLoading, list = [], mutateList } = useBrandList();
     const { isLoading: isInfoLoading, brand } = useBrandInfo(pid, list);
     const { description, is_visible: isVisible, name, price, type } = brand ?? {};
-    let formData = { description, isVisible, name, price, type };
+    let formData = { description, isVisible, name, price, type, page_type:'Brand' };
     formData = { ...formData, ...brand };
     const handleCancel = () => router.push('/brands');
 
     const handleSubmit = async (data: FormData) => {
         try {
             const filteredList = list.filter(item => item.id !== pid);
-            const { description, isVisible, name, price, type } = data;
-            let apiFormattedData = { description, is_visible: isVisible, name, price, type };
+            const { description, isVisible, name, price, type, page_type } = data;
+            let apiFormattedData = { description, is_visible: isVisible, name, price, type, page_type };
             apiFormattedData = {...apiFormattedData, ...data};
             // Update local data immediately (reduce latency to user)
             mutateList([...filteredList, { ...brand, ...data }], false);
-
+            delete apiFormattedData.page_type;
             // Update brand details
-            await fetch(`/api/brands/${pid}?context=${encodedContext}`, {
+            let res = await fetch(`/api/brands/${pid}?context=${encodedContext}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(apiFormattedData),
             });
-
+            res = await res.json();
             // Refetch to validate local data
             mutateList();
 
             router.push('/brands');
         } catch (error) {
+            debugger
             console.error('Error updating the brand: ', error);
         }
     };

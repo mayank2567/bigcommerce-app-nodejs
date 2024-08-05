@@ -13,7 +13,7 @@ const categoryInfo = () => {
     const { error, isLoading, list = [], mutateList } = usecategoryList();
     const { isLoading: isInfoLoading, category } = usecategoryInfo(pid, list);
     const { description, is_visible: isVisible, name, price, type } = category ?? {};
-    let formData = { description, isVisible, name, price, type };
+    let formData = { description, isVisible, name, price, type, page_type: 'Category' };
     formData = { ...formData, ...category };
     const handleCancel = () => router.push('/categories');
 

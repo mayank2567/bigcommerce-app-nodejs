@@ -39,7 +39,7 @@ const Categories = () => {
     };
 
     const renderName = (id: number, name: string): ReactElement => (
-        <Link href={`/products/${id}`}>
+        <Link href={`/categories/${id}`}>
             <StyledLink>{name}</StyledLink>
         </Link>
     );
@@ -55,7 +55,7 @@ const Categories = () => {
 
     const renderAction = (id: number): ReactElement => (
         <Dropdown
-            items={[ { content: 'Edit product', onItemClick: () => router.push(`/products/${id}`), hash: 'edit' } ]}
+            items={[ { content: 'Edit product', onItemClick: () => router.push(`/categories/${id}`), hash: 'edit' } ]}
             toggle={<Button iconOnly={<MoreHorizIcon color="secondary60" />} variant="subtle" />}
         />
     );
@@ -64,16 +64,16 @@ const Categories = () => {
     if (error) return <ErrorMessage error={error} />;
 
     return (
-        <Panel id="products">
+        <Panel id="categories">
             <Table
                 columns={[
-                    { header: 'Products name', hash: 'name', render: ({ id, name }) => renderName(id, name), isSortable: true },
+                    { header: 'Categories name', hash: 'name', render: ({ id, name }) => renderName(id, name), isSortable: true },
                     { header: 'Stock', hash: 'stock', render: ({ stock }) => renderStock(stock), isSortable: true },
                     { header: 'Price', hash: 'price', render: ({ price }) => renderPrice(price), isSortable: true },
                     { header: 'Action', hideHeader: true, hash: 'id', render: ({ id }) => renderAction(id) },
                 ]}
                 items={tableItems}
-                itemName="Products"
+                itemName="categories"
                 pagination={{
                     currentPage,
                     totalItems: meta?.pagination?.total,

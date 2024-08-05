@@ -59,7 +59,6 @@ export function useProductInfo(pid: number, list?:ListItem[]) {
 
     // Conditionally fetch product if it doesn't exist in the list (e.g. deep linking)
     const { data, error } = useSWR(!product && context ? [`/api/products/${pid}`, params] : null, fetcher);
-
     return {
         product: product ?? data,
         isLoading: product ? false : (!data && !error),
@@ -140,7 +139,6 @@ export function useBrandInfo(pid: number, list?:ListItem[]) {
 
     // Conditionally fetch brand if it doesn't exist in the list (e.g. deep linking)
     const { data, error } = useSWR(!brand && context ? [`/api/brands/${pid}`, params] : null, fetcher);
-
     return {
         brand: brand ?? data,
         isLoading: brand ? false : (!data && !error),
@@ -189,7 +187,6 @@ export function usecategoryInfo(pid: number, list?:ListItem[]) {
 
     // Conditionally fetch category if it doesn't exist in the list (e.g. deep linking)
     const { data, error } = useSWR(!category && context ? [`/api/categories/${pid}`, params] : null, fetcher);
-
     return {
         category: category ?? data,
         isLoading: category ? false : (!data && !error),
