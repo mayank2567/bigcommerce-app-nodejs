@@ -1,96 +1,90 @@
-import { Button, Dropdown, Panel, Small, Link as StyledLink, Table, TableSortDirection } from '@bigcommerce/big-design';
-import { MoreHorizIcon } from '@bigcommerce/big-design-icons';
-import Link from 'next/link';
-import { useRouter } from 'next/router';
-import { ReactElement, useState } from 'react';
-import ErrorMessage from '../../components/error';
-import Loading from '../../components/loading';
-import { usecategoryList } from '../../lib/hooks';
-import { TableItem } from '../../types';
-
-const Categories = () => {
-    const [itemsPerPage, setItemsPerPage] = useState(10);
-    const [currentPage, setCurrentPage] = useState(1);
-    const [columnHash, setColumnHash] = useState('');
-    const [direction, setDirection] = useState<TableSortDirection>('ASC');
+import {
+    Panel,
+    Link as StyledLink,
+    TableSortDirection,
+  } from "@bigcommerce/big-design";
+  import Link from "next/link";
+  import { useRouter } from "next/router";
+  import { useState } from "react";
+  import { usecategoryList } from "../../lib/hooks";
+  import {
+    Edit as EditIcon,
+  } from "@mui/icons-material";
+  import {
+    MaterialReactTable,
+    useMaterialReactTable,
+  } from "material-react-table";
+  import Button from "react-bootstrap/Button";
+  import { Row, Col } from "react-bootstrap";
+  import generate_details from "../../lib/generate_details";
+  import { useSession } from "../../context/session";
+  
+  const Categories = () => {
+      const encodedContext = useSession()?.context;
+  
+    const [rowSelection, setRowSelection] = useState({});
+    const [pagination, setPagination] = useState({
+      pageIndex: 0,
+      pageSize: 10,
+    });
+    const [sorting, setSorting] = useState([]);
+    const [columnHash, setColumnHash] = useState("");
+    const [direction, setDirection] = useState<TableSortDirection>("ASC");
     const router = useRouter();
-    const { error, isLoading, list = [], meta = {} } = usecategoryList({
-      page: String(currentPage),
-      limit: String(itemsPerPage),
+    const {
+      error,
+      list = [],
+      meta = {},
+    } = usecategoryList({
+      page: String(pagination.pageIndex + 1),
+      limit: String(pagination.pageSize),
       ...(columnHash && { sort: columnHash }),
       ...(columnHash && { direction: direction.toLowerCase() }),
     });
-    const itemsPerPageOptions = [10, 20, 50, 100];
-    const tableItems: TableItem[] = list.map(({ id, inventory_level: stock, name, price }) => ({
-        id,
-        name,
-        price,
-        stock,
-    }));
-
-    const onItemsPerPageChange = newRange => {
-        setCurrentPage(1);
-        setItemsPerPage(newRange);
-    };
-
-    const onSort = (newColumnHash: string, newDirection: TableSortDirection) => {
-        setColumnHash(newColumnHash === 'stock' ? 'inventory_level' : newColumnHash);
-        setDirection(newDirection);
-    };
-
-    const renderName = (id: number, name: string): ReactElement => (
-        <Link href={`/categories/${id}`}>
-            <StyledLink>{name}</StyledLink>
-        </Link>
-    );
-
-    const renderPrice = (price: number): string => (
-        new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(price)
-    );
-
-    const renderStock = (stock: number): ReactElement => (stock > 0
-        ? <Small>{stock}</Small>
-        : <Small bold marginBottom="none" color="danger">0</Small>
-    );
-
-    const renderAction = (id: number): ReactElement => (
-        <Dropdown
-            items={[ { content: 'Edit product', onItemClick: () => router.push(`/categories/${id}`), hash: 'edit' } ]}
-            toggle={<Button iconOnly={<MoreHorizIcon color="secondary60" />} variant="subtle" />}
-        />
-    );
-
-    if (isLoading) return <Loading />;
-    if (error) return <ErrorMessage error={error} />;
-
+    console.log(rowSelection);
+    const table = useMaterialReactTable({
+      columns: [
+        { accessorKey: "name", header: "Category name" },
+        { accessorKey: "stock", header: "Stock" },
+        { accessorKey: "price", header: "Price" },
+        { accessorKey: "id", header: "ID" },
+      ],
+      data: list,
+      // enableRowSelection: true,
+      getRowId: (row) => row.id, //give each row a more useful id
+      onRowSelectionChange: setRowSelection, //connect internal row selection state to your own
+      state: { rowSelection,pagination,sorting }, //pass our managed row selection state to the table to use
+      rowCount: meta?.pagination?.total ?? 0,
+      manualPagination: true,
+      enableRowActions: true,
+      enableRowSelection: true,
+      onSortingChange: setSorting,
+      onPaginationChange: setPagination,
+      renderRowActions: ({ row }) => [
+        <Link href={`/categories/${row.id}`}>
+          <StyledLink><EditIcon /></StyledLink>
+        </Link>,
+        
+      ],
+    });
+    async function update_using_gpt(){
+      let ids = Object.keys(rowSelection);
+      let ids_int = ids.map((id) => parseInt(id));
+      let brands_to_be_updated = list.filter((brand) => ids_int.includes(brand.id));
+      alert(`Start updating ${brands_to_be_updated.length} categories`);
+      generate_details('Category',brands_to_be_updated, encodedContext); 
+    }
     return (
-        <Panel id="categories">
-            <Table
-                columns={[
-                    { header: 'Categories name', hash: 'name', render: ({ id, name }) => renderName(id, name), isSortable: true },
-                    { header: 'Stock', hash: 'stock', render: ({ stock }) => renderStock(stock), isSortable: true },
-                    { header: 'Price', hash: 'price', render: ({ price }) => renderPrice(price), isSortable: true },
-                    { header: 'Action', hideHeader: true, hash: 'id', render: ({ id }) => renderAction(id) },
-                ]}
-                items={tableItems}
-                itemName="categories"
-                pagination={{
-                    currentPage,
-                    totalItems: meta?.pagination?.total,
-                    onPageChange: setCurrentPage,
-                    itemsPerPageOptions,
-                    onItemsPerPageChange,
-                    itemsPerPage,
-                }}
-                sortable={{
-                  columnHash,
-                  direction,
-                  onSort,
-                }}
-                stickyHeader
-            />
-        </Panel>
+      <Panel id="categories">
+          <Row>
+              <Col align="end">
+                  <Button disabled = {Object.keys(rowSelection).length ? false : true}  onClick={update_using_gpt}>Generate Details</Button>     
+              </Col>
+          </Row>
+        <MaterialReactTable table={table} />;
+      </Panel>
     );
-};
-
-export default Categories;
+  };
+  
+  export default Categories;
+  
