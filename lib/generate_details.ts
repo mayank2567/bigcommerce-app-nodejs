@@ -1,6 +1,9 @@
 import getPromts from "../components/prompts";
 let queue = [];
 async function generate_details(type, details, encodedContext) {
+    for(let i = 0; i < details.length; i++){
+        queue.push(details[i].id);
+    }
     for (let i = 0; i < details.length; i++) {
         let description_prompt = getPromts(details[i].name, type, 'description');
         let meta_description_prompt = getPromts(details[i].name, type, 'meta_description');
@@ -47,7 +50,8 @@ async function generate_details(type, details, encodedContext) {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(apiFormattedData),
         });
+        queue = queue.filter((id) => id !== details[i].id);
 
     }
 }
-export default {generate_details};
+export default {generate_details, queue};

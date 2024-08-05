@@ -80,6 +80,8 @@ import {
       <Panel id="brands">
                           <ToastContainer />
                           <Row>
+                            <Col>
+                            </Col>
               <Col align="end">
                   <Button disabled = {Object.keys(rowSelection).length ? false : true}  onClick={update_using_gpt}>Generate Details</Button>     
               </Col>
