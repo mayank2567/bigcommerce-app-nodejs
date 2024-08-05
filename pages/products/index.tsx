@@ -5,7 +5,7 @@ import {
 } from "@bigcommerce/big-design";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { ReactElement, useState, useMemo } from "react";
+import { useState } from "react";
 import { useProductList } from "../../lib/hooks";
 import {
   Edit as EditIcon,

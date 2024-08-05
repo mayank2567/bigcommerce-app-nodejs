@@ -6,11 +6,14 @@ async function generate_details(type, details, encodedContext) {
         let meta_description_prompt = getPromts(details[i].name, type, 'meta_description');
         let search_keywords_prompt = getPromts(details[i].name, type, 'search_keywords');
         let meta_keywords_prompt = getPromts(details[i].name, type, 'meta_keywords');
-        const description_response = await fetch(`/api/gptprompt?context=${encodedContext}`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ prompt: description_prompt, type: 'description' }),
-        });
+        let description_response;
+        if(type !== 'Brand'){
+            description_response = await fetch(`/api/gptprompt?context=${encodedContext}`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ prompt: description_prompt, type: 'description' }),
+            });
+        }
         const meta_description_response = await fetch(`/api/gptprompt?context=${encodedContext}`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -28,12 +31,13 @@ async function generate_details(type, details, encodedContext) {
         });
         let apiFormattedData = { ...details[i] };
          let responses = {
-            description: await description_response.json(),
+            description: description_response ? await (description_response || {} ).json() : {data: ''},
             meta_description: await meta_description_response.json(),
             search_keywords: await search_keywords_response.json(),
             meta_keywords: await meta_keywords_response.json(),
         };
-        apiFormattedData.description = responses.description.data;
+        apiFormattedData.description = responses.description.data ? responses.description.data : null;
+        if(type == 'Brand') delete apiFormattedData.description;
         apiFormattedData.meta_description = responses.meta_description.data;
         apiFormattedData.search_keywords = responses.search_keywords.data;
         apiFormattedData.meta_keywords = responses.meta_keywords.data?.split(',');
