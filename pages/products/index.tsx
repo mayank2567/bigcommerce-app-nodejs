@@ -36,7 +36,7 @@ const Products = () => {
     ...(columnHash && { sort: columnHash }),
     ...(columnHash && { direction: direction.toLowerCase() }),
   });
-//   console.log(pagination);
+  console.log(rowSelection);
   const table = useMaterialReactTable({
     columns: [
       { accessorKey: "name", header: "Product name" },
@@ -46,12 +46,13 @@ const Products = () => {
     ],
     data: list,
     // enableRowSelection: true,
-    // getRowId: (row) => row.id, //give each row a more useful id
+    getRowId: (row) => row.id, //give each row a more useful id
     onRowSelectionChange: setRowSelection, //connect internal row selection state to your own
     state: { rowSelection,pagination,sorting }, //pass our managed row selection state to the table to use
     rowCount: meta?.pagination?.total ?? 0,
     manualPagination: true,
     enableRowActions: true,
+    enableRowSelection: true,
     onSortingChange: setSorting,
     onPaginationChange: setPagination,
     renderRowActions: ({ row }) => [
