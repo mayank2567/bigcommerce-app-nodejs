@@ -200,12 +200,15 @@ export function getUser() {
 
     let user: User;
     const { data, error } = useSWR(context ? [`/api/user`, params] : null, fetcher);
+    // localStorage.setItem('user', JSON.stringify(data));
     user = data;
     return user;
 }
 
 
 export function setUser(user: User) {
+    // console.log(`user: in setUser functrii ${JSON.stringify(user)}`);
+    if(!user?.email) return null;
     const { context } = useSession();
     const params = new URLSearchParams({ context }).toString();
 

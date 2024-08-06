@@ -5,7 +5,7 @@ export default async function user(req: NextApiRequest, res: NextApiResponse) {
     try {
         const {user} = await getSession(req);
         let updatedUser = req.body;
-        console.log(`user: in user functrii ${JSON.stringify(updatedUser)}`);
+        // console.log(`user: in user functrii ${JSON.stringify(updatedUser)}`);
         db.setUser(updatedUser.user);
         res.json(updatedUser.user);
     } catch (error) {

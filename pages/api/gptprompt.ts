@@ -52,7 +52,7 @@ export default async function gptdescription(
     let data = "";
     
     if (req?.body?.model === "gpt") {
-      console.log(`using gpt model for ${prompt}`);
+      // console.log(`using gpt model for ${prompt}`);
       let gptdata = await openai.chat.completions.create({
         model: "gpt-4o-mini",
         messages: [
