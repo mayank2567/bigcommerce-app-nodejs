@@ -19,6 +19,7 @@ import { Row, Col } from "react-bootstrap";
 import gpt_module from "../../lib/generate_details";
 import { useSession } from "../../context/session";
 import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Products = () => {
     const encodedContext = useSession()?.context;

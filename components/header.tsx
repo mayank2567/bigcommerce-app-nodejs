@@ -8,6 +8,7 @@ export const TabIds = {
     PRODUCTS: 'products',
     BRANDS: 'brands',
     CATEGORIES: 'categories',
+    SETTINGS: 'settings',
 };
 
 export const TabRoutes = {
@@ -15,6 +16,7 @@ export const TabRoutes = {
     [TabIds.PRODUCTS]: '/products',
     [TabIds.BRANDS]: '/brands',
     [TabIds.CATEGORIES]: '/categories',
+    [TabIds.SETTINGS]: '/settings',
 };
 
 const HeaderlessRoutes = [
@@ -69,6 +71,7 @@ const Header = () => {
         { ariaControls: 'products', id: TabIds.PRODUCTS, title: 'Products' },
         { ariaControls: 'brands', id: TabIds.BRANDS, title: 'Brands' },
         { ariaControls: 'categories', id: TabIds.CATEGORIES, title: 'Categories' },
+        { ariaControls: 'settings', id: TabIds.SETTINGS, title: 'Settings' },
 
     ];
 

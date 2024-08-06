@@ -14,7 +14,7 @@ async function generate_details(type, details, encodedContext) {
             description_response = await fetch(`/api/gptprompt?context=${encodedContext}`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ prompt: description_prompt, type: 'description' }),
+                body: JSON.stringify({ prompt: description_prompt, type: 'description', model: 'gpt' }),
             });
         }
         const meta_description_response = await fetch(`/api/gptprompt?context=${encodedContext}`, {

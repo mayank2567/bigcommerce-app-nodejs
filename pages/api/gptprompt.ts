@@ -50,15 +50,25 @@ export default async function gptdescription(
     let prompt = req.query.prompt || req.body.prompt;
     const bigcommerce = bigcommerceClient(accessToken, storeHash);
     let data = "";
-    debugger
-    if (req?.query?.model === "gpt") {
-      let gptdata = await openai.completions.create({
+    
+    if (req?.body?.model === "gpt") {
+      console.log(`using gpt model for ${prompt}`);
+      let gptdata = await openai.chat.completions.create({
         model: "gpt-4o-mini",
-        prompt: prompt,
-        max_tokens: 100,
+        messages: [
+          {
+            role: "system",
+            content: "please complete the task below.",
+          },
+          {
+            role: "user",
+            content: prompt,
+          },
+        ],
+        max_tokens: 5000,
         temperature: 0.7,
       });
-      data = gptdata.choices[0].text;
+      data = gptdata.choices[0].message.content;
     } else {
       const chatSession = model.startChat({
         generationConfig,
