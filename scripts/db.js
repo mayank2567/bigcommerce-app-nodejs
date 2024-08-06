@@ -18,6 +18,7 @@ const usersCreate = query('CREATE TABLE `users` (\n' +
     '  `userId` int(11) NOT NULL,\n' +
     '  `email` text NOT NULL,\n' +
     '  `username` text,\n' +
+    '  `charCount` int(11),\n' + 
     '  PRIMARY KEY (`id`),\n' +
     '  UNIQUE KEY `userId` (`userId`)\n' +
     ') ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;\n'

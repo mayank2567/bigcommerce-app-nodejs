@@ -2,6 +2,7 @@ export interface User {
     email: string;
     id: number;
     username?: string;
+    charCount?: number;
 }
 
 export interface SessionProps {

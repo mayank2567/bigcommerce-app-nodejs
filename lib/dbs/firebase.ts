@@ -16,15 +16,19 @@ const db = getFirestore(app);
 // Firestore data management functions
 
 // Use setUser for storing global user data (persists between installs)
-export async function setUser({ user }: SessionProps) {
+export async function setUser(user) {
+    console.log(`user in setuser: ${JSON.stringify(user)}`);
     if (!user) return null;
-
-    const { email, id, username } = user;
+    console.log(`user in setuser: ${JSON.stringify(user)}`);
+    const { email, id, username, charCount } = user;
     const ref = doc(db, 'users', String(id));
     const data: UserData = { email };
 
     if (username) {
         data.username = username;
+    }
+    if (charCount) {
+        data.charCount = charCount;
     }
 
     await setDoc(ref, data, { merge: true });

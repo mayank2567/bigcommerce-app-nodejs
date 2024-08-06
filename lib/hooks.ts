@@ -1,6 +1,6 @@
 import useSWR from 'swr';
 import { useSession } from '../context/session';
-import { ErrorProps, ListItem, Order, QueryParams, ShippingAndProductsInfo } from '../types';
+import { ErrorProps, ListItem, Order, QueryParams, ShippingAndProductsInfo,User } from '../types';
 
 async function fetcher(url: string, query: string) {
     const res = await fetch(`${url}?${query}`);
@@ -193,3 +193,22 @@ export function usecategoryInfo(pid: number, list?:ListItem[]) {
         error,
     };
 }
+
+export function getUser() {
+    const { context } = useSession();
+    const params = new URLSearchParams({ context }).toString();
+
+    let user: User;
+    const { data, error } = useSWR(context ? [`/api/user`, params] : null, fetcher);
+    user = data;
+    return user;
+}
+
+export function setUser(user: User) {
+    const { context } = useSession();
+    const params = new URLSearchParams({ context }).toString();
+
+    const { data, error } = useSWR(context ? [`/api/user/${user.email}`, user] : null, fetcher);
+    return data;
+}
+

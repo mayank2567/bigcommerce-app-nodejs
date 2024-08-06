@@ -20,8 +20,8 @@ const query = promisify(pool.query.bind(pool));
 export async function setUser({ user }: SessionProps) {
     if (!user) return null;
 
-    const { email, id, username } = user;
-    const userData = { email, userId: id, username };
+    const { email, id, username, charCount } = user;
+    const userData = { email, userId: id, username, charCount };
 
     await query('REPLACE INTO users SET ?', userData);
 }

@@ -9,6 +9,7 @@ export interface StoreData {
 export interface UserData {
     email: string;
     username?: string;
+    charCount?: number;
 }
 
 export interface Db {
