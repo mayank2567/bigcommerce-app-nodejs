@@ -7,9 +7,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { useProductList } from "../../lib/hooks";
-import {
-  Edit as EditIcon,
-} from "@mui/icons-material";
+import { Edit as EditIcon } from "@mui/icons-material";
 import {
   MaterialReactTable,
   useMaterialReactTable,
@@ -18,12 +16,14 @@ import Button from "react-bootstrap/Button";
 import { Row, Col } from "react-bootstrap";
 import gpt_module from "../../lib/generate_details";
 import { useSession } from "../../context/session";
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { getUser } from "../../lib/hooks";
+import Alert from "@mui/material/Alert";
 
 const Products = () => {
-    const encodedContext = useSession()?.context;
-
+  const encodedContext = useSession()?.context;
+  const user = getUser();
   const [rowSelection, setRowSelection] = useState({});
   const [pagination, setPagination] = useState({
     pageIndex: 0,
@@ -55,7 +55,7 @@ const Products = () => {
     // enableRowSelection: true,
     getRowId: (row) => row.id, //give each row a more useful id
     onRowSelectionChange: setRowSelection, //connect internal row selection state to your own
-    state: { rowSelection,pagination,sorting }, //pass our managed row selection state to the table to use
+    state: { rowSelection, pagination, sorting }, //pass our managed row selection state to the table to use
     rowCount: meta?.pagination?.total ?? 0,
     manualPagination: true,
     enableRowActions: true,
@@ -64,26 +64,55 @@ const Products = () => {
     onPaginationChange: setPagination,
     renderRowActions: ({ row }) => [
       <Link href={`/products/${row.id}`}>
-        <StyledLink><EditIcon /></StyledLink>
+        <StyledLink>
+          <EditIcon />
+        </StyledLink>
       </Link>,
-      
     ],
   });
-  async function update_using_gpt(){
+  async function update_using_gpt() {
     let ids = Object.keys(rowSelection);
     let ids_int = ids.map((id) => parseInt(id));
-    let products_to_be_updated = list.filter((product) => ids_int.includes(product.id));
+    let products_to_be_updated = list.filter((product) =>
+      ids_int.includes(product.id)
+    );
     toast(`Starting to update ${products_to_be_updated.length} products`);
-    gpt_module.generate_details('Product',products_to_be_updated, encodedContext); 
+    gpt_module.generate_details(
+      "Product",
+      products_to_be_updated,
+      encodedContext
+    );
   }
   return (
     <Panel id="products">
-                        <ToastContainer />
-                        <Row>
-            <Col align="end">
-                <Button disabled = {Object.keys(rowSelection).length ? false : true}  onClick={update_using_gpt}>Generate Details</Button>     
-            </Col>
-        </Row>
+      <ToastContainer />
+      <Row>
+        <Col align="end">
+          <Button
+            disabled={
+              Object.keys(rowSelection).length && user?.charCount > 0
+                ? false
+                : true
+            }
+            onClick={update_using_gpt}
+          >
+            Generate Details
+          </Button>
+        </Col>
+      </Row>
+      <Row>
+        <Col align="start">
+          {user?.charCount > 0 ? (
+            <Alert severity="info">
+              Remaining balace is ${user.charCount / 1000000}
+            </Alert>
+          ) : (
+            <Alert severity="error">
+              No balance remaining!!! Please recharge to genrate details
+            </Alert>
+          )}
+        </Col>
+      </Row>
       <MaterialReactTable table={table} />;
     </Panel>
   );
