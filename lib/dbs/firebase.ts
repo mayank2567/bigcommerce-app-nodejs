@@ -17,9 +17,8 @@ const db = getFirestore(app);
 
 // Use setUser for storing global user data (persists between installs)
 export async function setUser(user) {
-    console.log(`user in setuser: ${JSON.stringify(user)}`);
-    if (!user) return null;
-    console.log(`user in setuser: ${JSON.stringify(user)}`);
+    console.log(`User in setUser: ${JSON.stringify(user)}`);
+    if (!user && !user.id) return null;
     const { email, id, username, charCount } = user;
     const ref = doc(db, 'users', String(id));
     const data: UserData = { email };
@@ -32,6 +31,11 @@ export async function setUser(user) {
     }
 
     await setDoc(ref, data, { merge: true });
+}
+export async function getUser(email: string, id: number): Promise<UserData> {
+    if (!id) return null;
+    const userDoc = await getDoc(doc(db, 'users', String(id)));
+    return userDoc.data() as UserData;
 }
 
 export async function setStore(session: SessionProps) {

@@ -1,6 +1,6 @@
 import mysql, { PoolOptions } from 'mysql2';
 import { promisify } from 'util';
-import { SessionProps, StoreData } from '../../types';
+import { SessionProps, StoreData, UserData } from '../../types';
 
 const MYSQL_CONFIG: PoolOptions = {
     host: process.env.MYSQL_HOST,
@@ -65,6 +65,11 @@ export async function setStoreUser(session: SessionProps) {
     }
 }
 
+export const getUser = (email: string, id: number): Promise<UserData> => {
+    if (!email) return null;
+    let user = query('SELECT * FROM users WHERE email = ?', email);
+    return user as Promise<UserData>;
+}
 export async function deleteUser({ context, user, sub }: SessionProps) {
     const contextString = context ?? sub;
     const storeHash = contextString?.split('/')[1] || '';
