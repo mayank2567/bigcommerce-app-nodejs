@@ -61,7 +61,7 @@ async function generate_details(type, details, encodedContext) {
             if (apiFormattedData.meta_keywords) {
                 addedCharCount += apiFormattedData.meta_keywords.length;
             }
-            user.charCount += addedCharCount;
+            user.charCount -= addedCharCount;
             console.log(`user: in generate_details ${JSON.stringify(user)}`);
             await setUser(encodedContext, user);
             let res = await fetch(`/api/${route}/${details[i].id}?context=${encodedContext}`, {

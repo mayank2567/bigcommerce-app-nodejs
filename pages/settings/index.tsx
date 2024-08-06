@@ -22,7 +22,7 @@ const Settings = () => {
         <div>
             <h1>Settings</h1>
             <h2>User: {user?.email}</h2>
-            <h2>Char Count: {user?.charCount}</h2>
+            <h2>Remaining balance: ${user?.charCount/1000000}</h2>
             <h2>ID: {user?.id}</h2>
             <Button onClick={() => updateUser(user)}>Update User</Button>
         </div>
