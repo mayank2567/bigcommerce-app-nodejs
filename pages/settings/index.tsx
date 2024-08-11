@@ -12,7 +12,7 @@ const Settings = () => {
     process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!
   );
   const [showRecharge, setShowRecharge] = useState(false);
-  const [rechargeAmount, setRechargeAmount] = useState(1);
+  const [rechargeAmount, setRechargeAmount] = useState(0);
   const user = getUser();
     console.log(`User after getuser: ${JSON.stringify(user)}`);
     
@@ -25,7 +25,7 @@ const Settings = () => {
             <Button onClick={() => setShowRecharge(true)}>Recharge</Button>
             {showRecharge ?(
               <div>
-                <Input type="number" placeholder="Enter amount" value={rechargeAmount}
+                Enter Recharge amount in USD: <Input type="number" placeholder="Enter amount" value={rechargeAmount}
                 onChange={(e) => setRechargeAmount(parseFloat(e.target.value))} />
                 <Elements stripe={stripePromise} >
               <PaymentForm  rechargeAmount={rechargeAmount}  />
