@@ -1,11 +1,14 @@
 import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
+import {Elements} from '@stripe/react-stripe-js';
+import {loadStripe} from '@stripe/stripe-js';
+
 import axios from "axios";
 import React from "react";
 import { Button } from "react-bootstrap";
 import Alert from "@mui/material/Alert";
 import { getUser } from "../../lib/hooks";
 import { useSession } from "../../context/session";
-
+const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
 export default function PaymentForm({
   rechargeAmount,
 }: {

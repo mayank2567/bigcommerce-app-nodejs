@@ -6,6 +6,7 @@ export default async function user(req: NextApiRequest, res: NextApiResponse) {
         const {user} = await getSession(req);
         let getuser = await db.getUser(user.email, user.id);
         getuser.id = user.id;
+        if(!getuser.charCount) getuser.charCount = 0;
         res.json(getuser);
     } catch (error) {
         const { message, response } = error;

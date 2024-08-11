@@ -19,6 +19,8 @@ const db = getFirestore(app);
 export async function setUser(user) {
     console.log(`User in setUser: ${JSON.stringify(user)}`);
     if (!user && !user.id) return null;
+    if (!user.email && user.user) user = user.user;
+    console.log(`User in setUser after check: ${JSON.stringify(user)}`);
     const { email, id, username, charCount } = user;
     const ref = doc(db, 'users', String(id));
     const data: UserData = { email };
