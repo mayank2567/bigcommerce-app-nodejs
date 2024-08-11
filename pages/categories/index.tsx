@@ -91,7 +91,11 @@ const Categories = () => {
         <Col align="end">
           <div></div>
           <Button
-            disabled={Object.keys(rowSelection).length ? false : true}
+            disabled={
+              Object.keys(rowSelection).length && user?.charCount > 0
+                ? false
+                : true
+            }
             onClick={update_using_gpt}
           >
             Generate Details

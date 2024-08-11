@@ -4,6 +4,7 @@ import { getUser, setUser } from "./user";
 async function generate_details(type, details, encodedContext) {
     try {
         let user = await getUser(encodedContext);
+        if(user.charCount < 0) return;
         for (let i = 0; i < details.length; i++) {
             queue.push(details[i].id);
         }
